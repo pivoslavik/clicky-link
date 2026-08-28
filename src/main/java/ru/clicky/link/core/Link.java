@@ -1,36 +1,40 @@
-package ru.clicky.link.link;
+package ru.clicky.link.core;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
 import java.time.Instant;
 
 @Entity
 public class Link {
   @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  Long id;
+  private Long id;
+
+  @Column(nullable = false, unique = true, length = 12)
+  private String shortUrl;
 
   @Column(nullable = false)
-  String shortLink;
+  private String originalUrl;
 
-  @Column(nullable = false)
-  String originalUrl;
+  private final Instant createdAt = Instant.now();
 
-  Instant createdAt = Instant.now();
+  public void setId(Long id) {
+    this.id = id;
+  }
 
   private Long getId() {
     return id;
   }
 
-  public void setShortLink(String shortLink) {
-    this.shortLink = shortLink;
+  public void setShortUrl(String shortUrl) {
+    this.shortUrl = shortUrl;
   }
 
-  public String getShortLink() {
-    return shortLink;
+  public String getShortUrl() {
+    return shortUrl;
   }
 
   public void setOriginalUrl(String originalUrl) {
@@ -39,6 +43,10 @@ public class Link {
 
   public String getOriginalUrl() {
     return originalUrl;
+  }
+
+  public Instant getCreatedAt() {
+    return createdAt;
   }
 
   @Override
@@ -57,6 +65,6 @@ public class Link {
 
   @Override
   public String toString() {
-    return "Link{shortLink=" + shortLink + ", originalUrl=" + originalUrl + "}";
+    return "Link{shortUrl=" + shortUrl + ", originalUrl=" + originalUrl + "}";
   }
 }
