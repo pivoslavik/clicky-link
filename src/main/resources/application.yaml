@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:postgres}:${POSTGRES_PORT:5432}/${POSTGRES_NAME:postgres}
+    username: ${POSTGRES_USER:clicky_admin}
+    password: ${POSTGRES_PASSWORD:password123}
+    driver-class-name: org.postgresql.Driver
+  liquibase:
+    user: ${POSTGRES_USER:clicky_admin}
+    password: ${POSTGRES_PASSWORD:password123}
+    change-log: classpath:db/changelog/db.changelog-master.yaml
+    enabled: true
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
