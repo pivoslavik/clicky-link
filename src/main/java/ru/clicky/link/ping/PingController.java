@@ -9,7 +9,7 @@ public class PingController {
   private static final String PING_MESSAGE = "OK";
 
   @GetMapping("/ping")
-  MessageResponse ping(){
+  public MessageResponse ping(){
     return new MessageResponse(PING_MESSAGE);
   }
 }
