@@ -2,6 +2,7 @@ package ru.clicky.link.core;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import java.util.Optional;
 import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,5 +35,13 @@ public class LinkRepository {
         .setParameter("shortUrl", shortUrl)
         .getSingleResult();
     return count > 0;
+  }
+
+  @Transactional(readOnly = true)
+  public Optional<Link> findByShortUrl(String shortUrl) {
+    return getSession()
+        .createQuery("from Link l where l.shortUrl = :shortUrl", Link.class)
+        .setParameter("shortUrl", shortUrl)
+        .uniqueResultOptional();
   }
 }

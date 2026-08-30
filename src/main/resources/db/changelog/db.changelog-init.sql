@@ -1,6 +1,7 @@
 --liquibase formatted sql
 
 --changeset d.lebedev:001-create-link-table
+
 CREATE SEQUENCE links_seq START WITH 1 INCREMENT BY 1;
 
 CREATE TABLE links (
