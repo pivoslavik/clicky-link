@@ -1,12 +1,12 @@
 package ru.clicky.link.core;
 
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 import ru.clicky.link.base62.Base62Converter;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class LinkService {
-  private static final long DEFAULT_SHIFT = 56_800_235_584L;
+  private static final long DEFAULT_SHIFT = 56_800_235_582L;
 
   private final LinkRepository linkRepository;
   private final Base62Converter base62Converter;
@@ -14,6 +14,12 @@ public class LinkService {
   public LinkService(LinkRepository linkRepository, Base62Converter base62Converter) {
     this.linkRepository = linkRepository;
     this.base62Converter = base62Converter;
+  }
+
+  @Transactional
+  public LinkInfo createShortLink(LinkCreateRequest request) {
+    Link link = request.alias() != null ? createCustomLink(request.url(), request.alias()) : createGeneratedLink(request.url());
+    return LinkMapper.toInfo(link);
   }
 
   @Transactional
@@ -34,6 +40,11 @@ public class LinkService {
       shortUrl = base62Converter.encode(nextId + DEFAULT_SHIFT);
     } while (linkRepository.existsByShortUrl(shortUrl));
     return saveLink(nextId, shortUrl, originalUrl);
+  }
+
+  @Transactional(readOnly = true)
+  public Link redirect(String shortUrl) {
+    return linkRepository.findByShortUrl(shortUrl).orElseThrow(() -> new LinkNotFoundException("Link Not Found with short url:" + shortUrl));
   }
 
   private Link saveLink(Long nextId, String shortUrl, String originalUrl) {
