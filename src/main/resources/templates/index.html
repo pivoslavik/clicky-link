@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Clicky Link</title>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+</head>
+<body>
+    <h1>Clicky Link</h1>
+
+    <section>
+        <form hx-post="/process" hx-target="#result-container" hx-swap="outerHTML">
+            <div style="margin-bottom: 10px;">
+                <label for="url">Paste long url here:</label><br>
+                <input type="text" id="url" name="url" placeholder="https://example.com" required>
+            </div>
+            <div style="margin-bottom: 10px;">
+                <label for="alias">Custom alias (optional):</label><br>
+                <input type="text" id="alias" name="alias" placeholder="my-alias">
+            </div>
+            <button type="submit">shorten</button>
+        </form>
+        <div th:fragment="result-block" id="result-container">
+            <div th:if="${linkInfo != null}">
+                <h2>Your short url</h2>
+                <div>
+                    <pre th:text="|${baseUrl}/r/${linkInfo.shortUrl}|"></pre>
+                </div>
+            </div>
+        </div>
+    </section>
+</body>
+</html>
