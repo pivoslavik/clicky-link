@@ -6,8 +6,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import ru.clicky.link.common.constant.Routes;
 import ru.clicky.link.core.LinkCreateRequest;
 import ru.clicky.link.core.LinkService;
+import ru.clicky.link.ratelimiter.RateLimiter;
 
 @Controller
 public class FormPage {
@@ -25,7 +27,8 @@ public class FormPage {
     return "index";
   }
 
-  @PostMapping("/process")
+  @PostMapping(Routes.PROCESS)
+  @RateLimiter(key = "create_link_ui", limit = 10, periodSeconds = 60)
   public String processForm(@ModelAttribute LinkCreateRequest request, Model model) {
     model.addAttribute("linkInfo", linkService.createShortLink(request));
     model.addAttribute("baseUrl", backendUrl);

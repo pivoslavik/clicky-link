@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.clicky.link.common.response.MessageResponse;
 import ru.clicky.link.core.LinkAlreadyExistsException;
 import ru.clicky.link.core.LinkNotFoundException;
+import ru.clicky.link.ratelimiter.RateLimitExceededException;
 
 @RestControllerAdvice
 public class RestExceptionHandler {
@@ -41,6 +42,12 @@ public class RestExceptionHandler {
   public ResponseEntity<MessageResponse> handleDataIntegrityViolationException(DataIntegrityViolationException e) {
     logger.warn(e.getMessage(), e);
     return ResponseEntity.badRequest().body(new MessageResponse("Error processing the database request. Please try again later"));
+  }
+
+  @ExceptionHandler(RateLimitExceededException.class)
+  public ResponseEntity<MessageResponse> handleRateLimit(RateLimitExceededException e) {
+    logger.warn(e.getMessage(), e);
+    return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS).body(new MessageResponse(e.getMessage()));
   }
 
   @ExceptionHandler(Exception.class)

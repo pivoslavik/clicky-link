@@ -18,7 +18,8 @@ public class LinkService {
 
   @Transactional
   public LinkInfo createShortLink(LinkCreateRequest request) {
-    Link link = !(request.alias().isBlank()) ? createCustomLink(request.url(), request.alias()) : createGeneratedLink(request.url());
+    Link link = !(request.alias() == null || request.alias().isBlank())
+        ? createCustomLink(request.url(), request.alias()) : createGeneratedLink(request.url());
     return LinkMapper.toInfo(link);
   }
 
